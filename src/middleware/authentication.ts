@@ -1,14 +1,15 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { verifyJwtA, JwtAPayload } from '../config/jwt.js';
+import { verifyJwt, JwtPayload, UserAuthInfo } from '../config/jwt.js';
 
 declare module 'fastify' {
   interface FastifyRequest {
-    jwt?: JwtAPayload;
+    jwt?: JwtPayload;
+    user?: UserAuthInfo | null;
   }
 }
 
 /**
- * Authentication hook: validates JWT A from AMS
+ * Authentication hook: validates JWT from AMS (User/Service Authentication)
  */
 export async function authenticateAms(request: FastifyRequest, reply: FastifyReply) {
   const authHeader = request.headers['authorization'];
@@ -18,7 +19,7 @@ export async function authenticateAms(request: FastifyRequest, reply: FastifyRep
       success: false,
       error: {
         code: 'UNAUTHORIZED',
-        message: 'Missing or malformed Authorization Bearer token',
+        message: 'Missing or malformed Authorization Bearer token from AMS',
       },
       request_id: request.requestId,
     });
@@ -27,15 +28,16 @@ export async function authenticateAms(request: FastifyRequest, reply: FastifyRep
   const token = authHeader.substring(7).trim();
 
   try {
-    const payload = verifyJwtA(token);
+    const payload = verifyJwt(token);
     request.jwt = payload;
+    request.user = payload.user || (payload.sub ? { id: payload.sub, email: payload.sub } : null);
   } catch (err: any) {
     const isExpired = err.name === 'TokenExpiredError';
     return reply.status(401).send({
       success: false,
       error: {
         code: isExpired ? 'TOKEN_EXPIRED' : 'INVALID_TOKEN',
-        message: isExpired ? 'Token has expired' : (err.message || 'Invalid token'),
+        message: isExpired ? 'JWT Token has expired' : (err.message || 'Invalid JWT token'),
       },
       request_id: request.requestId,
     });
@@ -62,7 +64,13 @@ export function requireScope(requiredScope: string) {
       scopes = rawScope.split(/\s+/);
     }
 
-    if (!scopes.includes(requiredScope)) {
+    // Allow wildcard or matching scope or lookup:read
+    const isAllowed =
+      scopes.includes('*') ||
+      scopes.includes(requiredScope) ||
+      (requiredScope.includes('read') && scopes.includes('lookup:read'));
+
+    if (!isAllowed) {
       return reply.status(403).send({
         success: false,
         error: {

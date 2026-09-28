@@ -2,7 +2,6 @@ import { FastifyInstance } from 'fastify';
 import jwt from 'jsonwebtoken';
 import { openApiSpec } from './openapi.js';
 import { envConfig } from '../config/env.js';
-import { generateJwtB } from '../config/jwt.js';
 
 export default async function docsRoutes(fastify: FastifyInstance) {
   // 1. OpenAPI 3.1 JSON Specification
@@ -139,53 +138,53 @@ export default async function docsRoutes(fastify: FastifyInstance) {
     return reply.header('content-type', 'text/html; charset=utf-8').send(html);
   });
 
-  // 4. Test Token Helper (Generates valid JWT A & JWT B for immediate testing)
+  // 4. Test Token Helper (Generates valid JWT for AMS -> microservice-lookup testing)
   fastify.get('/dev/tokens', async (request, reply) => {
     const now = Math.floor(Date.now() / 1000);
-    // JWT A (AMS -> Fastify) with full scopes, valid for 24 hours for dev convenience
-    const jwtA = jwt.sign(
+    // JWT (AMS -> microservice-lookup) with full scopes, valid for 24 hours for dev convenience
+    const jwtToken = jwt.sign(
       {
-        iss: envConfig.jwtA.issuer,
-        aud: envConfig.jwtA.audience,
+        iss: envConfig.jwt.issuer,
+        aud: envConfig.jwt.audience,
         sub: 'ams-service',
+        user: {
+          id: 1,
+          name: 'Administrator',
+          email: 'admin@tigaserangkai.co.id',
+        },
         scope: [
+          'lookup:read',
           'integration:purchase-order:read',
           'integration:purchase-request:read',
         ],
         iat: now,
         exp: now + 86400,
       },
-      envConfig.jwtA.secret,
+      envConfig.jwt.secret,
       { algorithm: 'HS256' }
     );
 
-    // JWT B (Fastify -> EIS)
-    const jwtB = generateJwtB([
-      'purchase-order:read',
-      'purchase-request:read',
-    ]);
-
     return reply.send({
       success: true,
-      message: 'Token pengujian berhasil dibuat! Copy token JWT A untuk testing endpoint Fastify di Scalar atau Postman.',
+      message: 'Token pengujian berhasil dibuat! Gunakan token JWT ini pada header Authorization: Bearer <token>',
       generated_at: new Date().toISOString(),
-      jwt_a_ams_to_fastify: {
-        description: 'Gunakan token ini pada header Authorization untuk memanggil Fastify Integration Service (Port 5000)',
-        token: jwtA,
-        issuer: envConfig.jwtA.issuer,
-        audience: envConfig.jwtA.audience,
-        scopes: ['integration:purchase-order:read', 'integration:purchase-request:read'],
-        expires_in: '24 hours',
-        curl_example: `curl -H "Authorization: Bearer ${jwtA}" http://localhost:5000/api/v1/integration/purchase-orders/PO-2026-0001`,
+      architecture: {
+        flow: 'AMS -> microservice-lookup (JWT Auth) -> EIS Database (Sequelize ORM)',
+        jwt_b_status: 'NOT REQUIRED (Microservice connects directly to EIS MySQL database via Sequelize ORM)',
       },
-      jwt_b_fastify_to_eis: {
-        description: 'Gunakan token ini untuk pengujian langsung ke endpoint API v1 EIS (Port 9000)',
-        token: jwtB,
-        issuer: envConfig.jwtB.issuer,
-        audience: envConfig.jwtB.audience,
-        scopes: ['purchase-order:read', 'purchase-request:read'],
-        expires_in: `${envConfig.jwtB.ttlSeconds} seconds`,
-        curl_example: `curl -H "Authorization: Bearer ${jwtB}" http://localhost:9000/api/v1/purchase-orders/PO-2026-0001`,
+      jwt_ams_to_microservice: {
+        description: 'Gunakan token ini pada header Authorization untuk memanggil microservice-lookup (Port 5000)',
+        token: jwtToken,
+        issuer: envConfig.jwt.issuer,
+        audience: envConfig.jwt.audience,
+        scopes: ['lookup:read', 'integration:purchase-order:read', 'integration:purchase-request:read'],
+        expires_in: '24 hours',
+        curl_example: `curl -H "Authorization: Bearer ${jwtToken}" http://localhost:5000/api/v1/integration/purchase-orders/PO-2026-0001`,
+      },
+      jwt_a_ams_to_fastify: {
+        token: jwtToken,
+        issuer: envConfig.jwt.issuer,
+        audience: envConfig.jwt.audience,
       },
     });
   });

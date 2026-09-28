@@ -6,6 +6,7 @@ import purchaseOrderRoutes from './modules/purchase-order/purchase-order.route.j
 import purchaseRequestRoutes from './modules/purchase-request/purchase-request.route.js';
 import lookupRoutes from './modules/lookup/lookup.route.js';
 import docsRoutes from './docs/docs.route.js';
+import { testDatabaseConnection } from './database/sequelize.js';
 
 export async function buildApp(): Promise<FastifyInstance> {
   const fastify = Fastify({
@@ -39,10 +40,18 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   // Health Check Endpoint (Public)
   fastify.get('/health', async (request, reply) => {
+    const isDbConnected = await testDatabaseConnection();
     return {
       status: 'ok',
-      service: 'Fastify Integration Service',
+      service: 'Microservice Lookup',
       version: '2.0.0',
+      database: isDbConnected ? 'connected' : 'disconnected',
+      architecture: {
+        role: 'Connector between AMS and EIS Database',
+        auth: 'JWT Auth (AMS .env)',
+        orm: 'Sequelize ORM directly to EIS MySQL',
+        jwt_b: 'None (Direct DB access)',
+      },
       timestamp: new Date().toISOString(),
       request_id: request.requestId,
     };

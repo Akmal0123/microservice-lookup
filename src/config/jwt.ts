@@ -1,52 +1,49 @@
 import jwt from 'jsonwebtoken';
 import { envConfig } from './env.js';
 
-export interface JwtAPayload {
-  iss: string;
-  aud: string;
-  sub: string;
-  scope: string[] | string;
+export interface UserAuthInfo {
+  id?: number | string;
+  name?: string;
+  email?: string;
+}
+
+export interface JwtPayload {
+  iss?: string;
+  aud?: string | string[];
+  sub?: string;
+  user?: UserAuthInfo | null;
+  scope?: string[] | string;
   iat?: number;
   exp?: number;
 }
 
-export interface JwtBPayload {
-  iss: string;
-  aud: string;
-  sub: string;
-  scope: string[];
-  iat: number;
-  exp: number;
-}
+export type JwtAPayload = JwtPayload;
 
 /**
- * Verify JWT A received from AMS (Boundary 1: AMS -> Fastify)
+ * Verify JWT received from AMS (User/Service Authentication)
  */
-export function verifyJwtA(token: string): JwtAPayload {
-  const decoded = jwt.verify(token, envConfig.jwtA.secret, {
+export function verifyJwt(token: string): JwtPayload {
+  const allowedAudiences = [
+    envConfig.jwt.audience,
+    'microservice-lookup',
+    'integration-service',
+  ];
+
+  const decoded = jwt.verify(token, envConfig.jwt.secret, {
     algorithms: ['HS256'],
-    issuer: envConfig.jwtA.issuer,
-    audience: envConfig.jwtA.audience,
-  }) as JwtAPayload;
+  }) as JwtPayload;
+
+  // Validate audience if present in token
+  if (decoded.aud) {
+    const tokenAuds = Array.isArray(decoded.aud) ? decoded.aud : [decoded.aud];
+    const hasAudienceMatch = tokenAuds.some((aud) => allowedAudiences.includes(aud));
+    if (!hasAudienceMatch) {
+      throw new Error(`Invalid audience: expected one of ${allowedAudiences.join(', ')}`);
+    }
+  }
 
   return decoded;
 }
 
-/**
- * Generate short-lived JWT B for calling EIS (Boundary 2: Fastify -> EIS)
- */
-export function generateJwtB(scopes: string[] = ['purchase-order:read', 'purchase-request:read']): string {
-  const now = Math.floor(Date.now() / 1000);
-  const payload: JwtBPayload = {
-    iss: envConfig.jwtB.issuer,
-    aud: envConfig.jwtB.audience,
-    sub: 'integration-service',
-    scope: scopes,
-    iat: now,
-    exp: now + envConfig.jwtB.ttlSeconds,
-  };
-
-  return jwt.sign(payload, envConfig.jwtB.secret, {
-    algorithm: 'HS256',
-  });
-}
+// Backward-compatible alias
+export const verifyJwtA = verifyJwt;
