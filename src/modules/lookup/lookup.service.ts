@@ -1,5 +1,6 @@
 import { PurchaseOrderService } from '../purchase-order/purchase-order.service.js';
 import { PurchaseRequestService } from '../purchase-request/purchase-request.service.js';
+import { DummyTransactionData } from '../../data/dummy-transactions.js';
 
 export class LookupService {
   /**
@@ -70,7 +71,12 @@ export class LookupService {
       return await PurchaseOrderService.getByNumberOrId(clean, requestId);
     } catch {
       // Try PR
-      return await PurchaseRequestService.getByNumberOrId(clean, requestId);
+      try {
+        return await PurchaseRequestService.getByNumberOrId(clean, requestId);
+      } catch {
+        // Fallback to dummy transactions
+        return DummyTransactionData.findByKeyword(clean);
+      }
     }
   }
 }

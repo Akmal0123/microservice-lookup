@@ -6,6 +6,8 @@ import {
   Item,
 } from '../../database/models/index.js';
 import { transformPurchaseRequest } from '../../transformers/purchase-request.transformer.js';
+import { PdfTemplateService } from '../pdf/pdf-template.service.js';
+import { DummyTransactionData } from '../../data/dummy-transactions.js';
 
 export class PurchaseRequestService {
   /**
@@ -125,5 +127,24 @@ export class PurchaseRequestService {
         request_date: plain.request_date,
       };
     });
+  }
+
+  /**
+   * Get PDF for Purchase Request (generated via microservice PdfTemplateService)
+   */
+  static async getPdf(numberOrId: string, requestId?: string): Promise<Buffer> {
+    let prData: any = null;
+
+    try {
+      prData = await this.getByNumberOrId(numberOrId, requestId);
+    } catch {
+      prData = DummyTransactionData.findByKeyword(numberOrId);
+    }
+
+    if (!prData) {
+      throw new Error(`Purchase Request '${numberOrId}' not found`);
+    }
+
+    return await PdfTemplateService.generate(prData);
   }
 }

@@ -25,6 +25,12 @@ export default async function purchaseRequestRoutes(fastify: FastifyInstance) {
     PurchaseRequestController.lookup
   );
 
+  fastify.get(
+    '/api/v1/integration/purchase-requests/:number/pdf',
+    { preHandler: [scopeAuth] },
+    PurchaseRequestController.getPdf
+  );
+
   // Backward compatibility aliases
   fastify.get(
     '/api/integration/purchase-requests/:number',
@@ -36,5 +42,11 @@ export default async function purchaseRequestRoutes(fastify: FastifyInstance) {
     '/api/integration/purchase-requests/lookup',
     { preHandler: [scopeAuth] },
     PurchaseRequestController.lookup
+  );
+
+  fastify.get(
+    '/api/integration/purchase-requests/:number/pdf',
+    { preHandler: [scopeAuth] },
+    PurchaseRequestController.getPdf
   );
 }

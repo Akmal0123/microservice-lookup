@@ -8,8 +8,8 @@ import {
   Item,
 } from '../../database/models/index.js';
 import { transformPurchaseOrder } from '../../transformers/purchase-order.transformer.js';
-import axios from 'axios';
-import { envConfig } from '../../config/env.js';
+import { PdfTemplateService } from '../pdf/pdf-template.service.js';
+import { DummyTransactionData } from '../../data/dummy-transactions.js';
 
 export class PurchaseOrderService {
   /**
@@ -113,19 +113,21 @@ export class PurchaseOrderService {
   }
 
   /**
-   * Get PDF for Purchase Order (attempt EIS service fallback if needed)
+   * Get PDF for Purchase Order (generated via microservice PdfTemplateService)
    */
-  static async getPdf(idOrNumber: string, requestId?: string) {
+  static async getPdf(idOrNumber: string, requestId?: string): Promise<Buffer> {
+    let poData: any = null;
+
     try {
-      const url = `${envConfig.eis.baseUrl.replace(/\/$/, '')}/purchase-orders/${encodeURIComponent(idOrNumber)}/pdf`;
-      const res = await axios.get(url, {
-        responseType: 'arraybuffer',
-        timeout: envConfig.eis.timeoutMs,
-      });
-      return res;
+      poData = await this.getByNumberOrId(idOrNumber, requestId);
     } catch {
-      // If EIS HTTP is not reachable, throw descriptive error
-      throw new Error(`PDF for Purchase Order '${idOrNumber}' could not be generated.`);
+      poData = DummyTransactionData.findByKeyword(idOrNumber);
     }
+
+    if (!poData) {
+      throw new Error(`Purchase Order '${idOrNumber}' not found`);
+    }
+
+    return await PdfTemplateService.generate(poData);
   }
 }

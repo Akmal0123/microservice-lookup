@@ -9,9 +9,8 @@ export const sequelize = new Sequelize(
     host: envConfig.db.host,
     port: envConfig.db.port,
     dialect: envConfig.db.dialect,
-    logging: false, // Set to console.log if debugging queries
+    logging: process.env.SEQUELIZE_LOGGING === 'true' ? (sql: string) => console.log(`🔍 [Sequelize SQL]: ${sql}`) : false,
     define: {
-      underscored: true,
       timestamps: true,
       createdAt: 'created_at',
       updatedAt: 'updated_at',

@@ -47,10 +47,11 @@ export class PurchaseOrderController {
 
   static async getPdf(request: FastifyRequest, reply: FastifyReply) {
     const { id } = (request.params || {}) as { id: string };
-    const res = await PurchaseOrderService.getPdf(id, request.requestId);
+    const pdfBuffer = await PurchaseOrderService.getPdf(id, request.requestId);
 
-    reply.header('content-type', res.headers['content-type'] || 'application/pdf');
+    reply.header('content-type', 'application/pdf');
     reply.header('content-disposition', `inline; filename="PO_${id}.pdf"`);
-    return reply.send(Buffer.from(res.data));
+    reply.header('content-length', pdfBuffer.length);
+    return reply.send(pdfBuffer);
   }
 }

@@ -8,7 +8,9 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "test:orm": "tsx test-sequelize.ts",
+    "generate:templates": "tsx scripts/generate-templates.ts"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
@@ -17,11 +19,13 @@
     "fastify": "^4.28.1",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.24.4",
+    "pdfkit": "^0.20.2",
     "sequelize": "^6.37.8"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.10",
+    "@types/pdfkit": "^0.17.6",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   }

@@ -44,4 +44,14 @@ export class PurchaseRequestController {
       },
     });
   }
+
+  static async getPdf(request: FastifyRequest, reply: FastifyReply) {
+    const { number } = (request.params || {}) as { number: string };
+    const pdfBuffer = await PurchaseRequestService.getPdf(number, request.requestId);
+
+    reply.header('content-type', 'application/pdf');
+    reply.header('content-disposition', `inline; filename="PR_${number}.pdf"`);
+    reply.header('content-length', pdfBuffer.length);
+    return reply.send(pdfBuffer);
+  }
 }
