@@ -1,0 +1,9 @@
+{
+  "id": "sample_prd",
+  "name": "Sample PRD Slip Template",
+  "category": "CUSTOM",
+  "description": "Contoh implementasi template XML sesuai spesifikasi PRD Section 8",
+  "version": "1.0.0",
+  "createdAt": "2026-10-12T06:25:22.760Z",
+  "updatedAt": "2026-10-12T06:25:22.761Z"
+}

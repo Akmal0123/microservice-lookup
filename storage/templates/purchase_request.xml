@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document size="A4" orientation="portrait" margin="28.3" unit="pt">
+   <page size="A4" margin="28.3">
+      <!-- Kop Surat Tisera -->
+      <rect x="28.3" y="28.3" width="51" height="45" fill="#d21919" />
+      <text font="Helvetica-Bold" size="16" x="28.3" y="38" width="51" align="center" color="#ffffff">TD</text>
+
+      <text font="Helvetica-Bold" size="11" x="88" y="28.3" color="#000000">PT TISERA DISTRIBUSINDO</text>
+      <text font="Helvetica-Bold" size="8.5" x="88" y="41" color="#000000">{{default entity "Head Office"}}</text>
+      <text font="Helvetica" size="7.5" x="88" y="52" color="#000000">Jl. Dr. Soepomo No. 23 Solo</text>
+      <text font="Helvetica" size="7.5" x="88" y="62" color="#000000">Phone : 0271 - 714344 Fax : 0271 - 716874</text>
+
+      <!-- Right Print Meta -->
+      <text font="Helvetica-Oblique" size="7.5" x="350" y="28.3" width="216" align="right" color="#000000">{{default print_date (default tanggal "-")}}</text>
+      <text font="Helvetica-Oblique" size="7.5" x="350" y="39" width="216" align="right" color="#000000">Print by : {{default print_by "iadijana"}}</text>
+
+      <!-- Header bottom border line -->
+      <line x1="28.3" y1="79.4" x2="566.9" y2="79.4" color="#000000" lineWidth="1.5" />
+
+      <!-- Document Title -->
+      <text font="Helvetica-Bold" size="13" x="28.3" y="90" width="538.6" align="center" color="#000000">PURCHASE REQUEST</text>
+
+      <!-- Meta Grid (Left Column) -->
+      <text font="Helvetica" size="8.5" x="28.3" y="113" color="#000000">Request No.</text>
+      <text font="Helvetica" size="8.5" x="99" y="113" color="#000000">:</text>
+      <text font="Helvetica-Bold" size="8.5" x="113" y="113" color="#000000">{{default nomor_dokumen kode}}</text>
+
+      <text font="Helvetica" size="8.5" x="28.3" y="126" color="#000000">Tanggal</text>
+      <text font="Helvetica" size="8.5" x="99" y="126" color="#000000">:</text>
+      <text font="Helvetica" size="8.5" x="113" y="126" color="#000000">{{default tanggal "-"}}</text>
+
+      <text font="Helvetica" size="8.5" x="28.3" y="139" color="#000000">No. Referensi</text>
+      <text font="Helvetica" size="8.5" x="99" y="139" color="#000000">:</text>
+      <text font="Helvetica" size="8.5" x="113" y="139" color="#000000">{{default no_ref "-"}}</text>
+
+      <!-- Meta Grid (Right Column) -->
+      <text font="Helvetica" size="8.5" x="326" y="113" color="#000000">Gudang</text>
+      <text font="Helvetica" size="8.5" x="411" y="113" color="#000000">:</text>
+      <text font="Helvetica" size="8.5" x="425" y="113" color="#000000">{{default gudang "MDC SOLO TD"}}</text>
+
+      <text font="Helvetica" size="8.5" x="326" y="126" color="#000000">Entity Gudang</text>
+      <text font="Helvetica" size="8.5" x="411" y="126" color="#000000">:</text>
+      <text font="Helvetica" size="8.5" x="425" y="126" color="#000000">{{default entity "Head Office"}}</text>
+
+      <text font="Helvetica" size="8.5" x="326" y="139" color="#000000">Jadwal Kedatangan</text>
+      <text font="Helvetica" size="8.5" x="411" y="139" color="#000000">:</text>
+      <text font="Helvetica" size="8.5" x="425" y="139" color="#000000">{{default del_date (default tanggal "-")}}</text>
+
+      <!-- Notice -->
+      <text font="Helvetica" size="8.5" x="28.3" y="159" color="#000000">Mohon untuk dibeli barang-barang sebagai berikut :</text>
+
+      <!-- Items Table -->
+      <table x="28.3" y="175" width="538.6">
+        <header height="18" bgColor="#f0f0f0">
+          <col width="28.3" align="center" font="Helvetica-Bold" size="8" border="true">No</col>
+          <col width="70.8" align="center" font="Helvetica-Bold" size="8" border="true">Kode</col>
+          <col width="241" align="center" font="Helvetica-Bold" size="8" border="true">Nama</col>
+          <col width="45.3" align="center" font="Helvetica-Bold" size="8" border="true">Satuan</col>
+          <col width="39.7" align="center" font="Helvetica-Bold" size="8" border="true">Qty</col>
+          <col width="113.5" align="center" font="Helvetica-Bold" size="8" border="true">Keterangan</col>
+        </header>
+        {{#each items}}
+        <row height="16">
+          <col width="28.3" align="center" size="7.5" border="true">{{add @index 1}}</col>
+          <col width="70.8" align="center" size="7.5" border="true">{{default this.kode (default this.code "-")}}</col>
+          <col width="241" align="left" size="7.5" border="true">{{default this.nama (default this.name "-")}}</col>
+          <col width="45.3" align="center" size="7.5" border="true">{{default this.satuan (default this.unit "Unit")}}</col>
+          <col width="39.7" align="center" size="7.5" border="true">{{formatNumber (default this.qty 1) 0}}</col>
+          <col width="113.5" align="left" size="7.5" border="true">{{default this.keterangan (default this.remarks "-")}}</col>
+        </row>
+        {{/each}}
+      </table>
+
+      <!-- Keperluan / Catatan -->
+      {{#if keperluan}}
+      <rect x="28.3" y="650" width="538.6" height="30" border="true" />
+      <text font="Helvetica-Bold" size="8" x="35" y="655" color="#000000">Keperluan :</text>
+      <text font="Helvetica" size="7.5" x="35" y="667" color="#000000">{{keperluan}}</text>
+      {{/if}}
+
+      <!-- Signature Section -->
+      <table x="28.3" y="695" width="538.6">
+        <header height="16" bgColor="#f8fafc">
+          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Diajukan Oleh :</col>
+          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Mengetahui :</col>
+          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Disetujui :</col>
+        </header>
+        <row height="50">
+          <col width="179.5" align="center" size="7.5" border="true"></col>
+          <col width="179.5" align="center" size="7.5" border="true"></col>
+          <col width="179.5" align="center" size="7.5" border="true"></col>
+        </row>
+        <row height="16" bgColor="#f8fafc">
+          <col width="179.5" align="center" size="7.5" border="true">Admin / User</col>
+          <col width="179.5" align="center" size="7.5" border="true">Kepala Bagian</col>
+          <col width="179.5" align="center" size="7.5" border="true">Direksi / Manajemen</col>
+        </row>
+      </table>
+   </page>
+</document>

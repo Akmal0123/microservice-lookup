@@ -1,0 +1,9 @@
+{
+  "id": "default_slip",
+  "name": "General Dynamic Slip Template",
+  "category": "GENERAL",
+  "description": "Template slip dinamis serbaguna dengan layout fleksibel untuk transaksi apapun",
+  "version": "1.0.0",
+  "createdAt": "2026-10-12T06:25:22.774Z",
+  "updatedAt": "2026-10-12T06:25:22.774Z"
+}

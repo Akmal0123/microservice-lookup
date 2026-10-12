@@ -1,0 +1,9 @@
+{
+  "id": "purchase_request",
+  "name": "Purchase Request Slip Template (PR / RQE)",
+  "category": "PR",
+  "description": "Template resmi Purchase Request Slip dengan layout kop Tisera, tabel items, dan tanda tangan approval",
+  "version": "1.0.0",
+  "createdAt": "2026-10-12T06:25:22.766Z",
+  "updatedAt": "2026-10-12T06:25:22.766Z"
+}

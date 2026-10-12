@@ -1,0 +1,9 @@
+{
+  "id": "purchase_order",
+  "name": "Purchase Order Slip Template (PO / POE)",
+  "category": "PO",
+  "description": "Template resmi Purchase Order Slip dengan rincian vendor, kalkulasi harga, diskon, PPN, dan signature",
+  "version": "1.0.0",
+  "createdAt": "2026-10-12T06:25:22.770Z",
+  "updatedAt": "2026-10-12T06:25:22.770Z"
+}

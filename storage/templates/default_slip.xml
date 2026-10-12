@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document size="A4" orientation="portrait" margin="36" unit="pt">
+   <page size="A4" margin="36">
+      <rect x="36" y="36" width="523.2" height="40" fill="#2563eb" radius="4" />
+      <text font="Helvetica-Bold" size="16" x="50" y="48" color="#ffffff">SLIP {{default slip_type (default tipe "TRANSAKSI")}}</text>
+
+      <text font="Helvetica-Bold" size="11" x="36" y="95" color="#0f172a">No Dokumen: {{default nomor_dokumen (default kode "DOC-000000")}}</text>
+      <text font="Helvetica" size="9" x="36" y="112" color="#64748b">Tanggal: {{default tanggal "-"}}</text>
+      <text font="Helvetica" size="9" x="360" y="112" color="#64748b">Entity: {{default entity "PT TISERA DISTRIBUSINDO"}}</text>
+
+      <line x1="36" y1="130" x2="559.2" y2="130" color="#cbd5e1" lineWidth="1" />
+
+      <table x="36" y="145" width="523.2">
+        <header height="20" bgColor="#f1f5f9">
+          <col width="40" align="center" font="Helvetica-Bold" size="8.5" border="true">No</col>
+          <col width="100" align="center" font="Helvetica-Bold" size="8.5" border="true">Kode / Ref</col>
+          <col width="223.2" align="left" font="Helvetica-Bold" size="8.5" border="true">Item / Deskripsi</col>
+          <col width="60" align="center" font="Helvetica-Bold" size="8.5" border="true">Qty</col>
+          <col width="100" align="right" font="Helvetica-Bold" size="8.5" border="true">Nominal / Nilai</col>
+        </header>
+        {{#each items}}
+        <row height="18">
+          <col width="40" align="center" size="8" border="true">{{add @index 1}}</col>
+          <col width="100" align="center" size="8" border="true">{{default this.kode (default this.code "-")}}</col>
+          <col width="223.2" align="left" size="8" border="true">{{default this.nama (default this.name (default this.keterangan "-"))}}</col>
+          <col width="60" align="center" size="8" border="true">{{formatNumber (default this.qty 1) 0}}</col>
+          <col width="100" align="right" size="8" border="true">{{#if this.nominal}}{{formatCurrency this.nominal "Rp "}}{{else if this.price}}{{formatCurrency this.price "Rp "}}{{else}}-{{/if}}</col>
+        </row>
+        {{/each}}
+      </table>
+
+      <!-- Summary box -->
+      {{#if nominal}}
+      <rect x="360" y="600" width="199.2" height="35" fill="#f8fafc" stroke="#94a3b8" radius="3" />
+      <text font="Helvetica-Bold" size="9" x="370" y="612" color="#0f172a">Total Nominal:</text>
+      <text font="Helvetica-Bold" size="11" x="430" y="610" width="120" align="right" color="#2563eb">{{formatCurrency nominal "Rp "}}</text>
+      {{/if}}
+
+      <line x1="36" y1="780" x2="559.2" y2="780" color="#e2e8f0" lineWidth="1" />
+      <text font="Helvetica-Oblique" size="8" x="36" y="790" color="#94a3b8">Dicetak otomatis melalui Microservice Dynamic PDF Generator</text>
+   </page>
+</document>

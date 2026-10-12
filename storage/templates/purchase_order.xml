@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document size="A4" orientation="portrait" margin="28.3" unit="pt">
+   <page size="A4" margin="28.3">
+      <!-- Kop Surat Tisera -->
+      <rect x="28.3" y="28.3" width="51" height="45" fill="#d21919" />
+      <text font="Helvetica-Bold" size="16" x="28.3" y="38" width="51" align="center" color="#ffffff">TD</text>
+
+      <text font="Helvetica-Bold" size="11" x="88" y="28.3" color="#000000">PT TISERA DISTRIBUSINDO</text>
+      <text font="Helvetica-Bold" size="8.5" x="88" y="41" color="#000000">{{default entity "Head Office"}}</text>
+      <text font="Helvetica" size="7.5" x="88" y="52" color="#000000">Jl. Dr. Soepomo No. 23 Solo</text>
+      <text font="Helvetica" size="7.5" x="88" y="62" color="#000000">Phone : 0271 - 714344 Fax : 0271 - 716874</text>
+
+      <!-- Right Print Meta -->
+      <text font="Helvetica-Oblique" size="7.5" x="350" y="28.3" width="216" align="right" color="#000000">{{default print_date (default tanggal "-")}}</text>
+      <text font="Helvetica-Oblique" size="7.5" x="350" y="39" width="216" align="right" color="#000000">Print by : {{default print_by "iadijana"}}</text>
+
+      <line x1="28.3" y1="79.4" x2="566.9" y2="79.4" color="#000000" lineWidth="1.5" />
+
+      <!-- Title -->
+      <text font="Helvetica-Bold" size="13" x="28.3" y="90" width="538.6" align="center" color="#000000">PURCHASE ORDER</text>
+
+      <!-- Meta Left -->
+      <text font="Helvetica" size="8.5" x="28.3" y="113" color="#000000">PO Number</text>
+      <text font="Helvetica" size="8.5" x="90" y="113" color="#000000">:</text>
+      <text font="Helvetica-Bold" size="8.5" x="100" y="113" color="#000000">{{default nomor_dokumen kode}}</text>
+
+      <text font="Helvetica" size="8.5" x="28.3" y="126" color="#000000">PO Date</text>
+      <text font="Helvetica" size="8.5" x="90" y="126" color="#000000">:</text>
+      <text font="Helvetica" size="8.5" x="100" y="126" color="#000000">{{default tanggal "-"}}</text>
+
+      <text font="Helvetica" size="8.5" x="28.3" y="139" color="#000000">Supplier</text>
+      <text font="Helvetica" size="8.5" x="90" y="139" color="#000000">:</text>
+      <text font="Helvetica-Bold" size="8.5" x="100" y="139" color="#000000">{{default supplier (default vendor "SUPPLIER UTAMA")}}</text>
+
+      <!-- Meta Right -->
+      <text font="Helvetica" size="8.5" x="326" y="113" color="#000000">Delivery Date</text>
+      <text font="Helvetica" size="8.5" x="400" y="113" color="#000000">:</text>
+      <text font="Helvetica" size="8.5" x="412" y="113" color="#000000">{{default del_date (default tanggal "-")}}</text>
+
+      <text font="Helvetica" size="8.5" x="326" y="126" color="#000000">Terms (TOP)</text>
+      <text font="Helvetica" size="8.5" x="400" y="126" color="#000000">:</text>
+      <text font="Helvetica" size="8.5" x="412" y="126" color="#000000">{{default top "30 Hari Netto"}}</text>
+
+      <text font="Helvetica" size="8.5" x="326" y="139" color="#000000">Currency</text>
+      <text font="Helvetica" size="8.5" x="400" y="139" color="#000000">:</text>
+      <text font="Helvetica" size="8.5" x="412" y="139" color="#000000">{{default currency "IDR"}}</text>
+
+      <!-- Items Table -->
+      <table x="28.3" y="165" width="538.6">
+        <header height="18" bgColor="#f0f0f0">
+          <col width="22" align="center" font="Helvetica-Bold" size="8" border="true">No</col>
+          <col width="68" align="center" font="Helvetica-Bold" size="8" border="true">Deliv Date</col>
+          <col width="221" align="center" font="Helvetica-Bold" size="8" border="true">Item Name</col>
+          <col width="39" align="center" font="Helvetica-Bold" size="8" border="true">Unit</col>
+          <col width="45" align="center" font="Helvetica-Bold" size="8" border="true">Qty</col>
+          <col width="71" align="center" font="Helvetica-Bold" size="8" border="true">Unit Price</col>
+          <col width="72.6" align="center" font="Helvetica-Bold" size="8" border="true">Amount</col>
+        </header>
+        {{#each items}}
+        <row height="16">
+          <col width="22" align="center" size="7.5" border="true">{{add @index 1}}</col>
+          <col width="68" align="center" size="7.5" border="true">{{default ../del_date (default ../tanggal "-")}}</col>
+          <col width="221" align="left" size="7.5" border="true">{{default this.nama (default this.name "-")}}</col>
+          <col width="39" align="center" size="7.5" border="true">{{default this.satuan (default this.unit "Unit")}}</col>
+          <col width="45" align="center" size="7.5" border="true">{{formatNumber (default this.qty 1) 0}}</col>
+          <col width="71" align="right" size="7.5" border="true">{{formatNumber (default this.price (default this.harga 0)) 2}}</col>
+          <col width="72.6" align="right" size="7.5" border="true">{{formatNumber (default this.amount (default this.subtotal (multiply (default this.qty 1) (default this.price (default this.harga 0))))) 2}}</col>
+        </row>
+        {{/each}}
+      </table>
+
+      <!-- Total Calculations Grid -->
+      <rect x="368" y="580" width="198.9" height="75" border="true" />
+      <text font="Helvetica" size="8" x="375" y="588" color="#000000">Sub Total</text>
+      <text font="Helvetica-Bold" size="8" x="480" y="588" width="80" align="right" color="#000000">{{formatCurrency (default nominal (default total 0)) "Rp "}}</text>
+
+      <text font="Helvetica" size="8" x="375" y="605" color="#000000">PPN (11%)</text>
+      <text font="Helvetica" size="8" x="480" y="605" width="80" align="right" color="#000000">{{formatCurrency (default ppn (multiply (default nominal (default total 0)) 0.11)) "Rp "}}</text>
+
+      <line x1="375" y1="622" x2="560" y2="622" color="#000000" lineWidth="0.75" />
+
+      <text font="Helvetica-Bold" size="9" x="375" y="632" color="#000000">Grand Total</text>
+      <text font="Helvetica-Bold" size="9" x="480" y="632" width="80" align="right" color="#000000">{{formatCurrency (default grand_total (default nominal (default total 0))) "Rp "}}</text>
+
+      <!-- Signatures -->
+      <table x="28.3" y="675" width="538.6">
+        <header height="16" bgColor="#f8fafc">
+          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Dibuat Oleh :</col>
+          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Disetujui Oleh :</col>
+          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Konfirmasi Supplier :</col>
+        </header>
+        <row height="55">
+          <col width="179.5" align="center" size="7.5" border="true"></col>
+          <col width="179.5" align="center" size="7.5" border="true"></col>
+          <col width="179.5" align="center" size="7.5" border="true"></col>
+        </row>
+        <row height="16" bgColor="#f8fafc">
+          <col width="179.5" align="center" size="7.5" border="true">Purchasing Dept</col>
+          <col width="179.5" align="center" size="7.5" border="true">Finance / Direksi</col>
+          <col width="179.5" align="center" size="7.5" border="true">Cap &amp; Tanda Tangan</col>
+        </row>
+      </table>
+   </page>
+</document>

@@ -1,6 +1,7 @@
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
+import { DynamicPdfService } from './services/dynamic-pdf.service.js';
 
 // Conversion: 1 mm in PDF points (72 pt / 25.4 mm)
 const mm = (val: number): number => val * 2.834645669;
@@ -828,10 +829,20 @@ export class PdfTemplateService {
 
   /**
    * Central Dispatcher to generate PDF from arbitrary transaction JSON data
+   * Tries dynamic template engine first (PRD compliant), then falls back to procedural drawing
    */
   public static async generate(data: any): Promise<Buffer> {
-    const tipe = String(data.tipe || '').toUpperCase();
-    const kode = String(data.kode || data.nomor_dokumen || data.document_number || '').toUpperCase();
+    try {
+      const dynamicRes = await DynamicPdfService.generate({ data });
+      if (dynamicRes && dynamicRes.buffer) {
+        return dynamicRes.buffer;
+      }
+    } catch (err: any) {
+      console.warn(`[PdfTemplateService] Dynamic template rendering fallback to procedural: ${err.message}`);
+    }
+
+    const tipe = String(data?.tipe || '').toUpperCase();
+    const kode = String(data?.kode || data?.nomor_dokumen || data?.document_number || '').toUpperCase();
 
     if (tipe === 'PR' || kode.startsWith('RQE') || kode.startsWith('PR')) {
       return this.generatePR(data);

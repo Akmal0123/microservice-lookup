@@ -1,0 +1,9 @@
+{
+  "id": "payment_request",
+  "name": "Payment Request / NPK / CCA Slip Template",
+  "category": "NPK",
+  "description": "Template resmi Nota Permintaan Kas (NPK) / Cash Advance (CCA) dengan grid remarks, approval, dan financial calc",
+  "version": "1.0.0",
+  "createdAt": "2026-10-12T06:25:22.773Z",
+  "updatedAt": "2026-10-12T06:25:22.773Z"
+}

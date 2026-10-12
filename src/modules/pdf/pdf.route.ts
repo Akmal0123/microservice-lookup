@@ -34,11 +34,34 @@ export default async function pdfRoutes(fastify: FastifyInstance) {
     }
   };
 
-  // POST generate PDF from arbitrary JSON transaction
+  // 1. Dynamic PDF Generation from JSON / API / Keyword
   fastify.post('/api/v1/integration/pdf/generate', { preHandler: [checkPdfAuth] }, PdfController.generateFromJson);
   fastify.post('/api/integration/pdf/generate', { preHandler: [checkPdfAuth] }, PdfController.generateFromJson);
 
-  // GET document PDF by keyword (PO or PR or dummy)
+  // 2. Direct Raw XML & Data PDF Renderer
+  fastify.post('/api/v1/integration/pdf/render-xml', { preHandler: [checkPdfAuth] }, PdfController.renderRawXml);
+  fastify.post('/api/integration/pdf/render-xml', { preHandler: [checkPdfAuth] }, PdfController.renderRawXml);
+
+  // 3. Document PDF Lookup by Keyword
   fastify.get('/api/v1/integration/document/:keyword/pdf', { preHandler: [checkPdfAuth] }, PdfController.getDocumentPdf);
   fastify.get('/api/integration/document/:keyword/pdf', { preHandler: [checkPdfAuth] }, PdfController.getDocumentPdf);
+
+  // 4. Runtime XML Template Management (PRD Section 5.2)
+  fastify.get('/api/v1/integration/pdf/templates', { preHandler: [checkPdfAuth] }, PdfController.listTemplates);
+  fastify.get('/api/integration/pdf/templates', { preHandler: [checkPdfAuth] }, PdfController.listTemplates);
+
+  fastify.get('/api/v1/integration/pdf/templates/:templateId', { preHandler: [checkPdfAuth] }, PdfController.getTemplate);
+  fastify.get('/api/integration/pdf/templates/:templateId', { preHandler: [checkPdfAuth] }, PdfController.getTemplate);
+
+  fastify.post('/api/v1/integration/pdf/templates', { preHandler: [checkPdfAuth] }, PdfController.saveTemplate);
+  fastify.post('/api/integration/pdf/templates', { preHandler: [checkPdfAuth] }, PdfController.saveTemplate);
+
+  fastify.put('/api/v1/integration/pdf/templates/:templateId', { preHandler: [checkPdfAuth] }, PdfController.saveTemplate);
+  fastify.put('/api/integration/pdf/templates/:templateId', { preHandler: [checkPdfAuth] }, PdfController.saveTemplate);
+
+  fastify.delete('/api/v1/integration/pdf/templates/:templateId', { preHandler: [checkPdfAuth] }, PdfController.deleteTemplate);
+  fastify.delete('/api/integration/pdf/templates/:templateId', { preHandler: [checkPdfAuth] }, PdfController.deleteTemplate);
+
+  fastify.post('/api/v1/integration/pdf/templates/:templateId/preview', { preHandler: [checkPdfAuth] }, PdfController.previewTemplate);
+  fastify.post('/api/integration/pdf/templates/:templateId/preview', { preHandler: [checkPdfAuth] }, PdfController.previewTemplate);
 }

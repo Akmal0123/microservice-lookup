@@ -10,6 +10,7 @@
     "start": "node dist/server.js",
     "test": "node --test",
     "test:orm": "tsx test-sequelize.ts",
+    "test:pdf": "tsx test-dynamic-pdf.ts",
     "generate:templates": "tsx scripts/generate-templates.ts"
   },
   "dependencies": {
@@ -17,15 +18,18 @@
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "fastify": "^4.28.1",
+    "handlebars": "^4.7.10",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.24.4",
     "pdfkit": "^0.20.2",
-    "sequelize": "^6.37.8"
+    "sequelize": "^6.37.8",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.10",
     "@types/pdfkit": "^0.17.6",
+    "@types/xml2js": "^0.4.14",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   }

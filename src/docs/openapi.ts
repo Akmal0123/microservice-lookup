@@ -35,6 +35,7 @@ Layanan middleware berkinerja tinggi berbasis **Fastify & TypeScript** yang berf
     { name: 'Purchase Orders', description: 'Integrasi Purchase Order dari EIS (Memerlukan scope integration:purchase-order:read)' },
     { name: 'Purchase Requests', description: 'Integrasi Purchase Request dari EIS (Memerlukan scope integration:purchase-request:read)' },
     { name: 'Unified Lookup', description: 'Pencarian dokumen lintas PO & PR untuk AMS' },
+    { name: 'Dynamic PDF Generator', description: 'Layanan Dynamic Slip & Report PDF Generator berbasis Handlebars, XML AST, dan PDFKit (PRD Dynamic PDF Generator)' },
     { name: 'Legacy Aliases', description: 'Endpoint kompatibilitas mundur (/api/integration/...)' },
   ],
   paths: {
@@ -451,6 +452,199 @@ Layanan middleware berkinerja tinggi berbasis **Fastify & TypeScript** yang berf
         security: [{ BearerAuth: ['integration:purchase-order:read'] }],
         parameters: [{ name: 'keyword', in: 'path', required: true, schema: { type: 'string' } }],
         responses: { '200': { description: 'OK' } },
+      },
+    },
+    '/api/v1/integration/pdf/generate': {
+      post: {
+        tags: ['Dynamic PDF Generator'],
+        summary: 'Generate PDF Dinamis dari JSON / Remote API URL / Keyword',
+        description: 'Menghasilkan dokumen PDF secara dinamis dari payload JSON, atau fetching otomatis dari data_url dengan Bearer token, lalu di-bind ke template XML via Handlebars dan PDFKit.',
+        security: [{ BearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  template_id: { type: 'string', example: 'purchase_request', description: 'ID template (purchase_request, purchase_order, payment_request, sample_prd, default_slip)' },
+                  template_xml: { type: 'string', description: 'Runtime custom XML template string (opsional)' },
+                  data: { type: 'object', description: 'Payload JSON transaksi langsung' },
+                  data_url: { type: 'string', example: 'https://api.internal.local/transaksi/123', description: 'URL API sumber data eksternal/internal (PRD 5.1)' },
+                  data_auth_token: { type: 'string', description: 'Bearer token untuk akses data_url' },
+                  keyword: { type: 'string', example: 'POE-22005020', description: 'Lookup keyword dokumen EIS/dummy' },
+                  format: { type: 'string', enum: ['binary', 'base64'], default: 'binary', description: 'Format balasan (binary PDF download atau JSON base64)' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'PDF Binary Stream atau Base64 Payload',
+            content: {
+              'application/pdf': { schema: { type: 'string', format: 'binary' } },
+              'application/json': { schema: { type: 'object' } },
+            },
+          },
+        },
+      },
+    },
+    '/api/v1/integration/document/{keyword}/pdf': {
+      get: {
+        tags: ['Dynamic PDF Generator'],
+        summary: 'Download / View Document PDF by Keyword',
+        description: 'Mencari data dokumen berdasarkan keyword (nomor PO/PR/NPK) dan me-render PDF menggunakan template XML aktif secara runtime.',
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          { name: 'keyword', in: 'path', required: true, schema: { type: 'string', example: 'POE-22005020' } },
+          { name: 'template_id', in: 'query', schema: { type: 'string' } },
+          { name: 'format', in: 'query', schema: { type: 'string', enum: ['binary', 'base64'], default: 'binary' } },
+        ],
+        responses: {
+          '200': {
+            description: 'File PDF Dokumen',
+            content: {
+              'application/pdf': { schema: { type: 'string', format: 'binary' } },
+            },
+          },
+        },
+      },
+    },
+    '/api/v1/integration/pdf/render-xml': {
+      post: {
+        tags: ['Dynamic PDF Generator'],
+        summary: 'Render PDF Langsung dari Raw XML & JSON Data',
+        description: 'Menguji render desain layout XML secara langsung tanpa perlu menyimpannya ke storage.',
+        security: [{ BearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['xml'],
+                properties: {
+                  xml: { type: 'string', description: 'Struktur XML lengkap (<document>...</document>)' },
+                  data: { type: 'object', description: 'Data variabel JSON untuk Handlebars binding' },
+                  format: { type: 'string', enum: ['binary', 'base64'], default: 'binary' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'File PDF Hasil Render',
+            content: {
+              'application/pdf': { schema: { type: 'string', format: 'binary' } },
+            },
+          },
+        },
+      },
+    },
+    '/api/v1/integration/pdf/templates': {
+      get: {
+        tags: ['Dynamic PDF Generator'],
+        summary: 'List Semua Template XML yang Tersedia',
+        description: 'Mengembalikan daftar seluruh template XML yang tersimpan dalam storage.',
+        security: [{ BearerAuth: [] }],
+        responses: {
+          '200': { description: 'Daftar template' },
+        },
+      },
+      post: {
+        tags: ['Dynamic PDF Generator'],
+        summary: 'Tambah Template XML Baru',
+        description: 'Menyimpan file desain template XML baru ke dalam storage runtime.',
+        security: [{ BearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['id', 'content'],
+                properties: {
+                  id: { type: 'string', example: 'custom_invoice' },
+                  name: { type: 'string', example: 'Custom Invoice Template' },
+                  category: { type: 'string', enum: ['PR', 'PO', 'NPK', 'GENERAL', 'CUSTOM'], default: 'CUSTOM' },
+                  description: { type: 'string' },
+                  content: { type: 'string', description: 'Isi XML template' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          '200': { description: 'Template berhasil disimpan' },
+        },
+      },
+    },
+    '/api/v1/integration/pdf/templates/{templateId}': {
+      get: {
+        tags: ['Dynamic PDF Generator'],
+        summary: 'Ambil Detail dan Konten Template XML',
+        security: [{ BearerAuth: [] }],
+        parameters: [{ name: 'templateId', in: 'path', required: true, schema: { type: 'string', example: 'purchase_request' } }],
+        responses: { '200': { description: 'Detail template' } },
+      },
+      put: {
+        tags: ['Dynamic PDF Generator'],
+        summary: 'Perbarui Konten Template XML (Runtime)',
+        security: [{ BearerAuth: [] }],
+        parameters: [{ name: 'templateId', in: 'path', required: true, schema: { type: 'string', example: 'purchase_request' } }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['content'],
+                properties: {
+                  name: { type: 'string' },
+                  description: { type: 'string' },
+                  category: { type: 'string' },
+                  content: { type: 'string', description: 'Isi XML baru' },
+                },
+              },
+            },
+          },
+        },
+        responses: { '200': { description: 'Template berhasil diperbarui' } },
+      },
+      delete: {
+        tags: ['Dynamic PDF Generator'],
+        summary: 'Hapus Template XML dari Storage',
+        security: [{ BearerAuth: [] }],
+        parameters: [{ name: 'templateId', in: 'path', required: true, schema: { type: 'string', example: 'custom_invoice' } }],
+        responses: { '200': { description: 'Template berhasil dihapus' } },
+      },
+    },
+    '/api/v1/integration/pdf/templates/{templateId}/preview': {
+      post: {
+        tags: ['Dynamic PDF Generator'],
+        summary: 'Preview / Uji Render Template dengan Data Dummy',
+        security: [{ BearerAuth: [] }],
+        parameters: [{ name: 'templateId', in: 'path', required: true, schema: { type: 'string', example: 'sample_prd' } }],
+        requestBody: {
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  data: { type: 'object', description: 'Data kustom untuk pengujian (opsional, jika kosong menggunakan default dummy)' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'PDF Preview',
+            content: { 'application/pdf': { schema: { type: 'string', format: 'binary' } } },
+          },
+        },
       },
     },
   },
