@@ -6,6 +6,7 @@ import purchaseOrderRoutes from './modules/purchase-order/purchase-order.route.j
 import purchaseRequestRoutes from './modules/purchase-request/purchase-request.route.js';
 import lookupRoutes from './modules/lookup/lookup.route.js';
 import pdfRoutes from './modules/pdf/pdf.route.js';
+import syncRoutes from './modules/sync/sync.route.js';
 import docsRoutes from './docs/docs.route.js';
 import { testDatabaseConnection } from './database/sequelize.js';
 
@@ -63,6 +64,8 @@ export async function buildApp(): Promise<FastifyInstance> {
   await fastify.register(purchaseRequestRoutes);
   await fastify.register(lookupRoutes);
   await fastify.register(pdfRoutes);
+  await fastify.register(syncRoutes);
+
 
   // Register Documentation & Testing Routes
   await fastify.register(docsRoutes);

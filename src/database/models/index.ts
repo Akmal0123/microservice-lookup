@@ -168,9 +168,67 @@ Vendor.init(
   }
 );
 
-// --- 4. PurchaseRequest Model ---
+// --- 4. User Model ---
+export interface UserAttributes {
+  id: number;
+  name: string;
+  username?: string | null;
+  email: string;
+  password?: string | null;
+  created_at?: Date;
+  updated_at?: Date;
+}
+export interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+
+export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+  public id!: number;
+  public name!: string;
+  public username!: string | null;
+  public email!: string;
+  public password!: string | null;
+  public readonly created_at!: Date;
+  public readonly updated_at!: Date;
+
+  // Relations
+  public purchase_orders?: PurchaseOrder[];
+  public purchase_requests?: PurchaseRequest[];
+}
+
+User.init(
+  {
+    id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    username: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    email: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+  },
+  {
+    sequelize,
+    tableName: 'users',
+  }
+);
+
+// --- 5. PurchaseRequest Model ---
 export interface PurchaseRequestAttributes {
   id: number;
+  user_id?: number | null;
   pr_number: string;
   company_id: number;
   requester_name: string;
@@ -185,6 +243,7 @@ export interface PurchaseRequestCreationAttributes extends Optional<PurchaseRequ
 
 export class PurchaseRequest extends Model<PurchaseRequestAttributes, PurchaseRequestCreationAttributes> implements PurchaseRequestAttributes {
   public id!: number;
+  public user_id!: number | null;
   public pr_number!: string;
   public company_id!: number;
   public requester_name!: string;
@@ -199,6 +258,7 @@ export class PurchaseRequest extends Model<PurchaseRequestAttributes, PurchaseRe
   public company?: Company;
   public items?: PurchaseRequestItem[];
   public purchase_orders?: PurchaseOrder[];
+  public user?: User;
 }
 
 PurchaseRequest.init(
@@ -207,6 +267,10 @@ PurchaseRequest.init(
       type: DataTypes.BIGINT.UNSIGNED,
       autoIncrement: true,
       primaryKey: true,
+    },
+    user_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
     },
     pr_number: {
       type: DataTypes.STRING(50),
@@ -312,6 +376,7 @@ PurchaseRequestItem.init(
 // --- 6. PurchaseOrder Model ---
 export interface PurchaseOrderAttributes {
   id: number;
+  user_id?: number | null;
   po_number: string;
   purchase_request_id?: number | null;
   company_id: number;
@@ -329,6 +394,7 @@ export interface PurchaseOrderCreationAttributes extends Optional<PurchaseOrderA
 
 export class PurchaseOrder extends Model<PurchaseOrderAttributes, PurchaseOrderCreationAttributes> implements PurchaseOrderAttributes {
   public id!: number;
+  public user_id!: number | null;
   public po_number!: string;
   public purchase_request_id!: number | null;
   public company_id!: number;
@@ -347,6 +413,7 @@ export class PurchaseOrder extends Model<PurchaseOrderAttributes, PurchaseOrderC
   public vendor?: Vendor;
   public purchase_request?: PurchaseRequest;
   public items?: PurchaseOrderItem[];
+  public user?: User;
 }
 
 PurchaseOrder.init(
@@ -355,6 +422,10 @@ PurchaseOrder.init(
       type: DataTypes.BIGINT.UNSIGNED,
       autoIncrement: true,
       primaryKey: true,
+    },
+    user_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
     },
     po_number: {
       type: DataTypes.STRING(50),
@@ -506,3 +577,10 @@ PurchaseRequestItem.belongsTo(PurchaseRequest, { foreignKey: 'purchase_request_i
 
 PurchaseRequestItem.belongsTo(Item, { foreignKey: 'item_id', as: 'item' });
 Item.hasMany(PurchaseRequestItem, { foreignKey: 'item_id', as: 'purchase_request_items' });
+
+// User Associations
+PurchaseOrder.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(PurchaseOrder, { foreignKey: 'user_id', as: 'purchase_orders' });
+
+PurchaseRequest.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(PurchaseRequest, { foreignKey: 'user_id', as: 'purchase_requests' });

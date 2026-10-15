@@ -22,6 +22,10 @@ export interface Config {
     baseUrl: string;
     timeoutMs: number;
   };
+  ams: {
+    baseUrl: string;
+    jwtSecret: string;
+  };
 }
 
 export const envConfig: Config = {
@@ -43,5 +47,9 @@ export const envConfig: Config = {
   eis: {
     baseUrl: process.env.EIS_BASE_URL || 'http://localhost:9000/api/v1',
     timeoutMs: parseInt(process.env.EIS_TIMEOUT_MS || '10000', 10),
+  },
+  ams: {
+    baseUrl: process.env.AMS_BASE_URL || 'http://localhost:8000',
+    jwtSecret: process.env.JWT_SECRET || 'ams-microservice-lookup-secret-key-jwt-auth',
   },
 };

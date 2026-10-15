@@ -11,6 +11,7 @@
     "test": "node --test",
     "test:orm": "tsx test-sequelize.ts",
     "test:pdf": "tsx test-dynamic-pdf.ts",
+    "test:sync": "tsx test-sync-e2e.ts",
     "generate:templates": "tsx scripts/generate-templates.ts"
   },
   "dependencies": {
