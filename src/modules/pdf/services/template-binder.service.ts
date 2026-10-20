@@ -139,6 +139,8 @@ export class TemplateBinderService {
           return val;
         }
       }
+      const lastArg = values[values.length - 1];
+      if (lastArg === '') return '';
       return 'N/A';
     });
 
@@ -163,7 +165,18 @@ export class TemplateBinderService {
     });
 
     hb.registerHelper('count', function (arr: any) {
+      if (typeof arr === 'string') return arr.length;
       return Array.isArray(arr) ? arr.length : 0;
+    });
+
+    hb.registerHelper('sumBy', function (arr: any, key: any) {
+      if (!Array.isArray(arr)) return 0;
+      const prop = typeof key === 'string' ? key : 'qty';
+      return arr.reduce((acc, curr) => {
+        const val = curr && typeof curr === 'object' ? curr[prop] : 0;
+        const num = typeof val === 'number' ? val : parseFloat(String(val || 0));
+        return acc + (isNaN(num) ? 0 : num);
+      }, 0);
     });
   }
 

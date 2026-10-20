@@ -98,105 +98,102 @@ export class TemplateStorageService {
         id: 'purchase_request',
         name: 'Purchase Request Slip Template (PR / RQE)',
         category: 'PR',
-        desc: 'Template resmi Purchase Request Slip dengan layout kop Tisera, tabel items, dan tanda tangan approval',
+        desc: 'Template resmi Purchase Request Slip dengan layout kop Tisera, tabel items, total dan box distribusi',
         xml: `<?xml version="1.0" encoding="UTF-8"?>
-<document size="A4" orientation="portrait" margin="28.3" unit="pt">
+<document size="A4" orientation="portrait" margin="28.3" unit="pt" footer="false">
    <page size="A4" margin="28.3">
       <!-- Kop Surat Tisera -->
-      <rect x="28.3" y="28.3" width="51" height="45" fill="#d21919" />
-      <text font="Helvetica-Bold" size="16" x="28.3" y="38" width="51" align="center" color="#ffffff">TD</text>
+      <image src="logo_td.png" x="28.3" y="24" width="50" height="36" />
 
-      <text font="Helvetica-Bold" size="11" x="88" y="28.3" color="#000000">PT TISERA DISTRIBUSINDO</text>
+      <text font="Helvetica-Bold" size="11" x="88" y="27" color="#000000" underline="true">PT TISERA DISTRIBUSINDO</text>
       <text font="Helvetica-Bold" size="8.5" x="88" y="41" color="#000000">{{default entity "Head Office"}}</text>
-      <text font="Helvetica" size="7.5" x="88" y="52" color="#000000">Jl. Dr. Soepomo No. 23 Solo</text>
-      <text font="Helvetica" size="7.5" x="88" y="62" color="#000000">Phone : 0271 - 714344 Fax : 0271 - 716874</text>
+      <text font="Helvetica" size="7.5" x="88" y="53" color="#000000">Jl. Dr. Soepomo No. 23 Solo</text>
+      <text font="Helvetica" size="7.5" x="88" y="63" color="#000000">Phone : 0271 - 714344 Fax : 0271 - 716874</text>
 
       <!-- Right Print Meta -->
-      <text font="Helvetica-Oblique" size="7.5" x="350" y="28.3" width="216" align="right" color="#000000">{{default print_date (default tanggal "-")}}</text>
-      <text font="Helvetica-Oblique" size="7.5" x="350" y="39" width="216" align="right" color="#000000">Print by : {{default print_by "iadijana"}}</text>
-
-      <!-- Header bottom border line -->
-      <line x1="28.3" y1="79.4" x2="566.9" y2="79.4" color="#000000" lineWidth="1.5" />
+      <text font="Helvetica-Oblique" size="7.5" x="350" y="27" width="216.9" align="right" color="#000000">{{default print_date (default tanggal "-")}}</text>
+      <text font="Helvetica-Oblique" size="7.5" x="350" y="39" width="216.9" align="right" color="#000000">Print by : {{default print_by "iadijana"}}</text>
 
       <!-- Document Title -->
-      <text font="Helvetica-Bold" size="13" x="28.3" y="90" width="538.6" align="center" color="#000000">PURCHASE REQUEST</text>
+      <text font="Helvetica-Bold" size="13" x="28.3" y="86" width="538.6" align="center" color="#000000">PURCHASE REQUEST</text>
 
       <!-- Meta Grid (Left Column) -->
-      <text font="Helvetica" size="8.5" x="28.3" y="113" color="#000000">Request No.</text>
-      <text font="Helvetica" size="8.5" x="99" y="113" color="#000000">:</text>
-      <text font="Helvetica-Bold" size="8.5" x="113" y="113" color="#000000">{{default nomor_dokumen kode}}</text>
+      <text font="Helvetica" size="8" x="28.3" y="110" color="#000000">Request No.</text>
+      <text font="Helvetica" size="8" x="95" y="110" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="105" y="110" color="#000000">{{default nomor_dokumen (default kode "-")}}</text>
 
-      <text font="Helvetica" size="8.5" x="28.3" y="126" color="#000000">Tanggal</text>
-      <text font="Helvetica" size="8.5" x="99" y="126" color="#000000">:</text>
-      <text font="Helvetica" size="8.5" x="113" y="126" color="#000000">{{default tanggal "-"}}</text>
+      <text font="Helvetica" size="8" x="28.3" y="124" color="#000000">Tanggal</text>
+      <text font="Helvetica" size="8" x="95" y="124" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="105" y="124" color="#000000">{{default print_date (default tanggal "-")}}</text>
 
-      <text font="Helvetica" size="8.5" x="28.3" y="139" color="#000000">No. Referensi</text>
-      <text font="Helvetica" size="8.5" x="99" y="139" color="#000000">:</text>
-      <text font="Helvetica" size="8.5" x="113" y="139" color="#000000">{{default no_ref "-"}}</text>
+      <text font="Helvetica" size="8" x="28.3" y="138" color="#000000">No. Referensi</text>
+      <text font="Helvetica" size="8" x="95" y="138" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="105" y="138" color="#000000">{{default no_ref (default ref_no "-")}}</text>
 
       <!-- Meta Grid (Right Column) -->
-      <text font="Helvetica" size="8.5" x="326" y="113" color="#000000">Gudang</text>
-      <text font="Helvetica" size="8.5" x="411" y="113" color="#000000">:</text>
-      <text font="Helvetica" size="8.5" x="425" y="113" color="#000000">{{default gudang "MDC SOLO TD"}}</text>
+      <text font="Helvetica" size="8" x="335" y="110" color="#000000">Gudang</text>
+      <text font="Helvetica" size="8" x="420" y="110" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="430" y="110" color="#000000">{{default gudang "MDC SOLO TD"}}</text>
 
-      <text font="Helvetica" size="8.5" x="326" y="126" color="#000000">Entity Gudang</text>
-      <text font="Helvetica" size="8.5" x="411" y="126" color="#000000">:</text>
-      <text font="Helvetica" size="8.5" x="425" y="126" color="#000000">{{default entity "Head Office"}}</text>
+      <text font="Helvetica" size="8" x="335" y="124" color="#000000">Entity Gudang</text>
+      <text font="Helvetica" size="8" x="420" y="124" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="430" y="124" color="#000000">{{default entity "Head Office"}}</text>
 
-      <text font="Helvetica" size="8.5" x="326" y="139" color="#000000">Jadwal Kedatangan</text>
-      <text font="Helvetica" size="8.5" x="411" y="139" color="#000000">:</text>
-      <text font="Helvetica" size="8.5" x="425" y="139" color="#000000">{{default del_date (default tanggal "-")}}</text>
+      <text font="Helvetica" size="8" x="335" y="138" color="#000000">Jadwal Kedatangan</text>
+      <text font="Helvetica" size="8" x="420" y="138" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="430" y="138" color="#000000">{{default del_date (default tanggal "-")}}</text>
 
       <!-- Notice -->
-      <text font="Helvetica" size="8.5" x="28.3" y="159" color="#000000">Mohon untuk dibeli barang-barang sebagai berikut :</text>
+      <text font="Helvetica" size="8.5" x="28.3" y="158" color="#000000">Mohon untuk dibeli barang-barang sebagai berikut :</text>
 
       <!-- Items Table -->
       <table x="28.3" y="175" width="538.6">
-        <header height="18" bgColor="#f0f0f0">
+        <header height="18" bgColor="#ffffff">
           <col width="28.3" align="center" font="Helvetica-Bold" size="8" border="true">No</col>
-          <col width="70.8" align="center" font="Helvetica-Bold" size="8" border="true">Kode</col>
-          <col width="241" align="center" font="Helvetica-Bold" size="8" border="true">Nama</col>
-          <col width="45.3" align="center" font="Helvetica-Bold" size="8" border="true">Satuan</col>
-          <col width="39.7" align="center" font="Helvetica-Bold" size="8" border="true">Qty</col>
-          <col width="113.5" align="center" font="Helvetica-Bold" size="8" border="true">Keterangan</col>
+          <col width="58" align="center" font="Helvetica-Bold" size="8" border="true">Kode</col>
+          <col width="232.3" align="center" font="Helvetica-Bold" size="8" border="true">Nama</col>
+          <col width="52" align="center" font="Helvetica-Bold" size="8" border="true">Satuan</col>
+          <col width="52" align="center" font="Helvetica-Bold" size="8" border="true">Qty</col>
+          <col width="116" align="center" font="Helvetica-Bold" size="8" border="true">Keterangan</col>
         </header>
         {{#each items}}
-        <row height="16">
+        <row height="28" bgColor="#ffffff">
           <col width="28.3" align="center" size="7.5" border="true">{{add @index 1}}</col>
-          <col width="70.8" align="center" size="7.5" border="true">{{default this.kode (default this.code "-")}}</col>
-          <col width="241" align="left" size="7.5" border="true">{{default this.nama (default this.name "-")}}</col>
-          <col width="45.3" align="center" size="7.5" border="true">{{default this.satuan (default this.unit "Unit")}}</col>
-          <col width="39.7" align="center" size="7.5" border="true">{{formatNumber (default this.qty 1) 0}}</col>
-          <col width="113.5" align="left" size="7.5" border="true">{{default this.keterangan (default this.remarks "-")}}</col>
+          <col width="58" align="center" size="7.5" border="true">{{default this.kode (default this.code "-")}}</col>
+          <col width="232.3" align="left" size="7.5" border="true">{{default this.nama (default this.name "-")}}</col>
+          <col width="52" align="center" size="7.5" border="true">{{default this.satuan (default this.unit "Unit")}}</col>
+          <col width="52" align="center" size="7.5" border="true">{{formatNumber (default this.qty 1) 0}}</col>
+          <col width="116" align="left" size="7.5" border="true">{{default this.keterangan (default this.remarks "-")}}</col>
         </row>
         {{/each}}
       </table>
 
-      <!-- Keperluan / Catatan -->
-      {{#if keperluan}}
-      <rect x="28.3" y="650" width="538.6" height="30" border="true" />
-      <text font="Helvetica-Bold" size="8" x="35" y="655" color="#000000">Keperluan :</text>
-      <text font="Helvetica" size="7.5" x="35" y="667" color="#000000">{{keperluan}}</text>
-      {{/if}}
+      <!-- Total Qty Row under Table -->
+      <text font="Helvetica-Bold" size="8.5" x="318" y="{{calculateY (count items) 206 28}}" color="#000000">TOTAL</text>
+      <text font="Helvetica" size="8" x="398.9" y="{{calculateY (count items) 206 28}}" width="52" align="center" color="#000000">{{formatNumber (sumBy items 'qty') 2}}</text>
+      <line x1="318" y1="{{calculateY (count items) 217 28}}" x2="566.9" y2="{{calculateY (count items) 217 28}}" color="#000000" lineWidth="1.5" />
 
-      <!-- Signature Section -->
-      <table x="28.3" y="695" width="538.6">
-        <header height="16" bgColor="#f8fafc">
-          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Diajukan Oleh :</col>
-          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Mengetahui :</col>
-          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Disetujui :</col>
-        </header>
-        <row height="50">
-          <col width="179.5" align="center" size="7.5" border="true"></col>
-          <col width="179.5" align="center" size="7.5" border="true"></col>
-          <col width="179.5" align="center" size="7.5" border="true"></col>
-        </row>
-        <row height="16" bgColor="#f8fafc">
-          <col width="179.5" align="center" size="7.5" border="true">Admin / User</col>
-          <col width="179.5" align="center" size="7.5" border="true">Kepala Bagian</col>
-          <col width="179.5" align="center" size="7.5" border="true">Direksi / Manajemen</col>
-        </row>
-      </table>
+      <!-- Distribusi Box (Positioned right below TOTAL line) -->
+      <rect x="265" y="{{calculateY (count items) 230 28}}" width="205" height="95" stroke="#000000" lineWidth="0.75" radius="4" />
+      <text font="Helvetica-Bold" size="8.5" x="278" y="{{calculateY (count items) 244 28}}" color="#000000">Distribusi</text>
+
+      <text font="Helvetica" size="8" x="278" y="{{calculateY (count items) 265 28}}" color="#000000">Asli</text>
+      <text font="Helvetica" size="8" x="325" y="{{calculateY (count items) 265 28}}" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="335" y="{{calculateY (count items) 265 28}}" color="#000000">Purchasing</text>
+
+      <text font="Helvetica" size="8" x="278" y="{{calculateY (count items) 282 28}}" color="#000000">Merah</text>
+      <text font="Helvetica" size="8" x="325" y="{{calculateY (count items) 282 28}}" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="335" y="{{calculateY (count items) 282 28}}" color="#000000">Accounting</text>
+
+      <text font="Helvetica" size="8" x="278" y="{{calculateY (count items) 299 28}}" color="#000000">Kuning</text>
+      <text font="Helvetica" size="8" x="325" y="{{calculateY (count items) 299 28}}" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="335" y="{{calculateY (count items) 299 28}}" color="#000000">File</text>
+
+      <!-- Optional Keperluan Note (if available, positioned below Distribusi box) -->
+      {{#if keperluan}}
+      <text font="Helvetica-Bold" size="8" x="28.3" y="{{calculateY (count items) 340 28}}" color="#000000">Keperluan :</text>
+      <text font="Helvetica" size="7.5" x="28.3" y="{{calculateY (count items) 352 28}}" color="#000000">{{keperluan}}</text>
+      {{/if}}
    </page>
 </document>`,
       },
@@ -204,109 +201,129 @@ export class TemplateStorageService {
         id: 'purchase_order',
         name: 'Purchase Order Slip Template (PO / POE)',
         category: 'PO',
-        desc: 'Template resmi Purchase Order Slip dengan rincian vendor, kalkulasi harga, diskon, PPN, dan signature',
+        desc: 'Template resmi Purchase Order Slip dengan rincian vendor, rincian items, dan rekapitulasi keuangan',
         xml: `<?xml version="1.0" encoding="UTF-8"?>
-<document size="A4" orientation="portrait" margin="28.3" unit="pt">
+<document size="A4" orientation="portrait" margin="28.3" unit="pt" footer="false">
    <page size="A4" margin="28.3">
       <!-- Kop Surat Tisera -->
-      <rect x="28.3" y="28.3" width="51" height="45" fill="#d21919" />
-      <text font="Helvetica-Bold" size="16" x="28.3" y="38" width="51" align="center" color="#ffffff">TD</text>
+      <image src="logo_td.png" x="28.3" y="24" width="50" height="36" />
 
-      <text font="Helvetica-Bold" size="11" x="88" y="28.3" color="#000000">PT TISERA DISTRIBUSINDO</text>
+      <text font="Helvetica-Bold" size="11" x="88" y="27" color="#000000" underline="true">PT TISERA DISTRIBUSINDO</text>
       <text font="Helvetica-Bold" size="8.5" x="88" y="41" color="#000000">{{default entity "Head Office"}}</text>
-      <text font="Helvetica" size="7.5" x="88" y="52" color="#000000">Jl. Dr. Soepomo No. 23 Solo</text>
-      <text font="Helvetica" size="7.5" x="88" y="62" color="#000000">Phone : 0271 - 714344 Fax : 0271 - 716874</text>
+      <text font="Helvetica" size="7.5" x="88" y="53" color="#000000">Jl. Dr. Soepomo No. 23 Solo</text>
+      <text font="Helvetica" size="7.5" x="88" y="63" color="#000000">Phone : 0271 - 714344 Fax : 0271 - 716874</text>
 
       <!-- Right Print Meta -->
-      <text font="Helvetica-Oblique" size="7.5" x="350" y="28.3" width="216" align="right" color="#000000">{{default print_date (default tanggal "-")}}</text>
-      <text font="Helvetica-Oblique" size="7.5" x="350" y="39" width="216" align="right" color="#000000">Print by : {{default print_by "iadijana"}}</text>
+      <text font="Helvetica-Oblique" size="7.5" x="350" y="27" width="216.9" align="right" color="#000000">{{default print_date (default tanggal "-")}}</text>
+      <text font="Helvetica-Oblique" size="7.5" x="350" y="39" width="216.9" align="right" color="#000000">Print by : {{default print_by "iadijana"}}</text>
 
-      <line x1="28.3" y1="79.4" x2="566.9" y2="79.4" color="#000000" lineWidth="1.5" />
+      <!-- Document Title -->
+      <text font="Helvetica-Bold" size="13" x="28.3" y="86" width="538.6" align="center" color="#000000">PURCHASE ORDER</text>
 
-      <!-- Title -->
-      <text font="Helvetica-Bold" size="13" x="28.3" y="90" width="538.6" align="center" color="#000000">PURCHASE ORDER</text>
+      <!-- Metadata Section -->
+      <!-- Left: Vendor Info -->
+      <text font="Helvetica" size="8.5" x="28.3" y="106" color="#000000">TO :</text>
+      <text font="Helvetica-Bold" size="8.5" x="28.3" y="119" color="#000000">{{default vendor (default supplier "MEDIA KARYA PUTRA. CV")}}</text>
+      <text font="Helvetica" size="8" x="28.3" y="145" color="#000000">Telp: {{default phone "0271 - 712684"}}   Fax: {{default fax ""}}</text>
 
-      <!-- Meta Left -->
-      <text font="Helvetica" size="8.5" x="28.3" y="113" color="#000000">PO Number</text>
-      <text font="Helvetica" size="8.5" x="90" y="113" color="#000000">:</text>
-      <text font="Helvetica-Bold" size="8.5" x="100" y="113" color="#000000">{{default nomor_dokumen kode}}</text>
+      <!-- Right: Document Meta -->
+      <text font="Helvetica" size="8" x="360" y="106" color="#000000">PO No.</text>
+      <text font="Helvetica" size="8" x="412" y="106" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="422" y="106" color="#000000">{{default nomor_dokumen (default kode "-")}}</text>
 
-      <text font="Helvetica" size="8.5" x="28.3" y="126" color="#000000">PO Date</text>
-      <text font="Helvetica" size="8.5" x="90" y="126" color="#000000">:</text>
-      <text font="Helvetica" size="8.5" x="100" y="126" color="#000000">{{default tanggal "-"}}</text>
+      <text font="Helvetica" size="8" x="360" y="118" color="#000000">Date</text>
+      <text font="Helvetica" size="8" x="412" y="118" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="422" y="118" color="#000000">{{default print_date (default tanggal "-")}}</text>
 
-      <text font="Helvetica" size="8.5" x="28.3" y="139" color="#000000">Supplier</text>
-      <text font="Helvetica" size="8.5" x="90" y="139" color="#000000">:</text>
-      <text font="Helvetica-Bold" size="8.5" x="100" y="139" color="#000000">{{default supplier (default vendor "SUPPLIER UTAMA")}}</text>
+      <text font="Helvetica" size="8" x="360" y="130" color="#000000">No. Ref.</text>
+      <text font="Helvetica" size="8" x="412" y="130" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="422" y="130" color="#000000">{{default ref_no (default no_ref "-")}}</text>
 
-      <!-- Meta Right -->
-      <text font="Helvetica" size="8.5" x="326" y="113" color="#000000">Delivery Date</text>
-      <text font="Helvetica" size="8.5" x="400" y="113" color="#000000">:</text>
-      <text font="Helvetica" size="8.5" x="412" y="113" color="#000000">{{default del_date (default tanggal "-")}}</text>
+      <text font="Helvetica" size="8" x="360" y="142" color="#000000">Date Ref.</text>
+      <text font="Helvetica" size="8" x="412" y="142" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="422" y="142" color="#000000">{{default date_ref ""}}</text>
 
-      <text font="Helvetica" size="8.5" x="326" y="126" color="#000000">Terms (TOP)</text>
-      <text font="Helvetica" size="8.5" x="400" y="126" color="#000000">:</text>
-      <text font="Helvetica" size="8.5" x="412" y="126" color="#000000">{{default top "30 Hari Netto"}}</text>
-
-      <text font="Helvetica" size="8.5" x="326" y="139" color="#000000">Currency</text>
-      <text font="Helvetica" size="8.5" x="400" y="139" color="#000000">:</text>
-      <text font="Helvetica" size="8.5" x="412" y="139" color="#000000">{{default currency "IDR"}}</text>
+      <text font="Helvetica" size="8" x="360" y="154" color="#000000">Currency</text>
+      <text font="Helvetica" size="8" x="412" y="154" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="422" y="154" color="#000000">{{default currency "IDR"}}</text>
 
       <!-- Items Table -->
-      <table x="28.3" y="165" width="538.6">
-        <header height="18" bgColor="#f0f0f0">
+      <table x="28.3" y="170" width="538.6">
+        <header height="18" bgColor="#ffffff">
           <col width="22" align="center" font="Helvetica-Bold" size="8" border="true">No</col>
-          <col width="68" align="center" font="Helvetica-Bold" size="8" border="true">Deliv Date</col>
-          <col width="221" align="center" font="Helvetica-Bold" size="8" border="true">Item Name</col>
-          <col width="39" align="center" font="Helvetica-Bold" size="8" border="true">Unit</col>
-          <col width="45" align="center" font="Helvetica-Bold" size="8" border="true">Qty</col>
+          <col width="68" align="center" font="Helvetica-Bold" size="8" border="true">Delivery Date</col>
+          <col width="223.6" align="center" font="Helvetica-Bold" size="8" border="true">Item Name</col>
+          <col width="36" align="center" font="Helvetica-Bold" size="8" border="true">Unit</col>
+          <col width="46" align="center" font="Helvetica-Bold" size="8" border="true">Quantity</col>
           <col width="71" align="center" font="Helvetica-Bold" size="8" border="true">Unit Price</col>
-          <col width="72.6" align="center" font="Helvetica-Bold" size="8" border="true">Amount</col>
+          <col width="72" align="center" font="Helvetica-Bold" size="8" border="true">Amount</col>
         </header>
         {{#each items}}
-        <row height="16">
+        <row height="16" bgColor="#ffffff">
           <col width="22" align="center" size="7.5" border="true">{{add @index 1}}</col>
-          <col width="68" align="center" size="7.5" border="true">{{default ../del_date (default ../tanggal "-")}}</col>
-          <col width="221" align="left" size="7.5" border="true">{{default this.nama (default this.name "-")}}</col>
-          <col width="39" align="center" size="7.5" border="true">{{default this.satuan (default this.unit "Unit")}}</col>
-          <col width="45" align="center" size="7.5" border="true">{{formatNumber (default this.qty 1) 0}}</col>
+          <col width="68" align="center" size="7.5" border="true">{{default this.delDate (default ../del_date (default ../tanggal "-"))}}</col>
+          <col width="223.6" align="left" size="7.5" border="true">{{default this.name (default this.nama "-")}}</col>
+          <col width="36" align="center" size="7.5" border="true">{{default this.unit (default this.satuan "Unit")}}</col>
+          <col width="46" align="center" size="7.5" border="true">{{formatNumber (default this.qty 1) 0}}</col>
           <col width="71" align="right" size="7.5" border="true">{{formatNumber (default this.price (default this.harga 0)) 2}}</col>
-          <col width="72.6" align="right" size="7.5" border="true">{{formatNumber (default this.amount (default this.subtotal (multiply (default this.qty 1) (default this.price (default this.harga 0))))) 2}}</col>
+          <col width="72" align="right" size="7.5" border="true">{{formatNumber (default this.amount (default this.subtotal (multiply (default this.qty 1) (default this.price (default this.harga 0))))) 2}}</col>
         </row>
         {{/each}}
       </table>
 
-      <!-- Total Calculations Grid -->
-      <rect x="368" y="580" width="198.9" height="75" border="true" />
-      <text font="Helvetica" size="8" x="375" y="588" color="#000000">Sub Total</text>
-      <text font="Helvetica-Bold" size="8" x="480" y="588" width="80" align="right" color="#000000">{{formatCurrency (default nominal (default total 0)) "Rp "}}</text>
+      <!-- Sub-Table Meta & Calculations Section (positioned immediately below table) -->
+      <!-- Row 1: Deliver To / Quantity Sum / Sub Total -->
+      <text font="Helvetica" size="8" x="28.3" y="{{calculateY (count items) 198 16}}" color="#000000">Deliver To</text>
+      <text font="Helvetica" size="8" x="102" y="{{calculateY (count items) 198 16}}" color="#000000">:</text>
+      <text font="Helvetica-Bold" size="8" x="112" y="{{calculateY (count items) 198 16}}" color="#000000">{{default deliver_to (default gudang "MDC SOLO TD")}}</text>
 
-      <text font="Helvetica" size="8" x="375" y="605" color="#000000">PPN (11%)</text>
-      <text font="Helvetica" size="8" x="480" y="605" width="80" align="right" color="#000000">{{formatCurrency (default ppn (multiply (default nominal (default total 0)) 0.11)) "Rp "}}</text>
+      <text font="Helvetica-Oblique" size="8" x="377.9" y="{{calculateY (count items) 198 16}}" width="46" align="center" color="#000000">{{formatNumber (sumBy items 'qty') 0}}</text>
 
-      <line x1="375" y1="622" x2="560" y2="622" color="#000000" lineWidth="0.75" />
+      <text font="Helvetica" size="8" x="430" y="{{calculateY (count items) 198 16}}" color="#000000">Sub Total</text>
+      <text font="Helvetica" size="8" x="480" y="{{calculateY (count items) 198 16}}" width="86.9" align="right" color="#000000">{{formatNumber (default totals.subtotal (default nominal (default total 0))) 2}}</text>
+      <line x1="430" y1="{{calculateY (count items) 209 16}}" x2="566.9" y2="{{calculateY (count items) 209 16}}" color="#000000" lineWidth="0.5" />
 
-      <text font="Helvetica-Bold" size="9" x="375" y="632" color="#000000">Grand Total</text>
-      <text font="Helvetica-Bold" size="9" x="480" y="632" width="80" align="right" color="#000000">{{formatCurrency (default grand_total (default nominal (default total 0))) "Rp "}}</text>
+      <!-- Row 2: Term of Payment / Discount -->
+      <text font="Helvetica" size="8" x="28.3" y="{{calculateY (count items) 212 16}}" color="#000000">Term of Payment</text>
+      <text font="Helvetica" size="8" x="102" y="{{calculateY (count items) 212 16}}" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="112" y="{{calculateY (count items) 212 16}}" color="#000000">{{default top (default term_of_payment "")}}</text>
 
-      <!-- Signatures -->
-      <table x="28.3" y="675" width="538.6">
-        <header height="16" bgColor="#f8fafc">
-          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Dibuat Oleh :</col>
-          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Disetujui Oleh :</col>
-          <col width="179.5" align="center" font="Helvetica-Bold" size="8" border="true">Konfirmasi Supplier :</col>
-        </header>
-        <row height="55">
-          <col width="179.5" align="center" size="7.5" border="true"></col>
-          <col width="179.5" align="center" size="7.5" border="true"></col>
-          <col width="179.5" align="center" size="7.5" border="true"></col>
-        </row>
-        <row height="16" bgColor="#f8fafc">
-          <col width="179.5" align="center" size="7.5" border="true">Purchasing Dept</col>
-          <col width="179.5" align="center" size="7.5" border="true">Finance / Direksi</col>
-          <col width="179.5" align="center" size="7.5" border="true">Cap &amp; Tanda Tangan</col>
-        </row>
-      </table>
+      <text font="Helvetica" size="8" x="430" y="{{calculateY (count items) 212 16}}" color="#000000">Discount</text>
+      <text font="Helvetica" size="8" x="480" y="{{calculateY (count items) 212 16}}" width="86.9" align="right" color="#000000">{{formatNumber (default totals.discount 0) 2}}</text>
+      <line x1="430" y1="{{calculateY (count items) 223 16}}" x2="566.9" y2="{{calculateY (count items) 223 16}}" color="#000000" lineWidth="0.5" />
+
+      <!-- Row 3: Payment Type / DPPLainnya -->
+      <text font="Helvetica" size="8" x="28.3" y="{{calculateY (count items) 226 16}}" color="#000000">Payment Type</text>
+      <text font="Helvetica" size="8" x="102" y="{{calculateY (count items) 226 16}}" color="#000000">:</text>
+      <text font="Helvetica" size="8" x="112" y="{{calculateY (count items) 226 16}}" color="#000000">{{default payment_type ""}}</text>
+
+      <text font="Helvetica" size="8" x="430" y="{{calculateY (count items) 226 16}}" color="#000000">DPPLainnya</text>
+      <text font="Helvetica" size="8" x="480" y="{{calculateY (count items) 226 16}}" width="86.9" align="right" color="#000000">{{formatNumber (default totals.dppLainnya (default dpp_lainnya 0)) 2}}</text>
+      <line x1="430" y1="{{calculateY (count items) 237 16}}" x2="566.9" y2="{{calculateY (count items) 237 16}}" color="#000000" lineWidth="0.5" />
+
+      <!-- Row 4: PPN -->
+      <text font="Helvetica" size="8" x="430" y="{{calculateY (count items) 240 16}}" color="#000000">PPN</text>
+      <text font="Helvetica" size="8" x="480" y="{{calculateY (count items) 240 16}}" width="86.9" align="right" color="#000000">{{formatNumber (default totals.ppn (default ppn 0)) 2}}</text>
+      <line x1="430" y1="{{calculateY (count items) 251 16}}" x2="566.9" y2="{{calculateY (count items) 251 16}}" color="#000000" lineWidth="0.5" />
+
+      <!-- Row 5: Notes Label / Transport -->
+      <text font="Helvetica" size="8" x="28.3" y="{{calculateY (count items) 254 16}}" color="#000000">Notes :</text>
+
+      <text font="Helvetica" size="8" x="430" y="{{calculateY (count items) 254 16}}" color="#000000">Transport</text>
+      <text font="Helvetica" size="8" x="480" y="{{calculateY (count items) 254 16}}" width="86.9" align="right" color="#000000">{{formatNumber (default totals.transport (default transport 0)) 2}}</text>
+      <line x1="430" y1="{{calculateY (count items) 265 16}}" x2="566.9" y2="{{calculateY (count items) 265 16}}" color="#000000" lineWidth="0.5" />
+
+      <!-- Row 6: Notes Content / TOTAL -->
+      <text font="Helvetica" size="7.5" x="28.3" y="{{calculateY (count items) 268 16}}" color="#000000">{{default notes (default catatan "")}}</text>
+
+      <text font="Helvetica-Bold" size="8.5" x="430" y="{{calculateY (count items) 268 16}}" color="#000000">TOTAL</text>
+      <text font="Helvetica-Bold" size="8.5" x="480" y="{{calculateY (count items) 268 16}}" width="86.9" align="right" color="#000000">{{formatNumber (default totals.total (default nominal (default total 0))) 2}}</text>
+      <line x1="430" y1="{{calculateY (count items) 279 16}}" x2="566.9" y2="{{calculateY (count items) 279 16}}" color="#000000" lineWidth="1" />
+      <line x1="430" y1="{{calculateY (count items) 281 16}}" x2="566.9" y2="{{calculateY (count items) 281 16}}" color="#000000" lineWidth="0.5" />
+
+      <!-- Page Bottom Footer -->
+      <line x1="28.3" y1="765" x2="566.9" y2="765" color="#000000" lineWidth="0.75" />
+      <text font="Helvetica" size="8.5" x="480" y="774" width="86.9" align="right" color="#000000">Page    1/1</text>
    </page>
 </document>`,
       },

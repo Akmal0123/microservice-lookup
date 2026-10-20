@@ -1,6 +1,7 @@
 import PDFDocument from 'pdfkit';
 import xml2js from 'xml2js';
 import fs from 'fs';
+import path from 'path';
 
 export interface ParseOptions {
   defaultUnit?: 'pt' | 'mm';
@@ -144,7 +145,10 @@ export class XmlPdfParserService {
     }
 
     // 4. Apply footer page numbering if buffered
-    this.applyGlobalFooters(doc);
+    const showFooter = docAttrs.footer !== 'false' && docAttrs.footer !== false && docAttrs.showFooter !== 'false' && docAttrs.showFooter !== false;
+    if (showFooter) {
+      this.applyGlobalFooters(doc);
+    }
 
     // Finalize PDFKit document
     doc.end();
@@ -365,9 +369,22 @@ export class XmlPdfParserService {
     const width = attrs.width || attrs.w ? this.toPoints(attrs.width || attrs.w, unit) : undefined;
     const height = attrs.height || attrs.h ? this.toPoints(attrs.height || attrs.h, unit) : undefined;
 
+    let finalPath = src;
+    if (!fs.existsSync(finalPath)) {
+      const inTemplates = path.resolve(process.cwd(), 'storage/templates', path.basename(src));
+      if (fs.existsSync(inTemplates)) {
+        finalPath = inTemplates;
+      } else {
+        const inWorkspace = path.resolve(process.cwd(), src);
+        if (fs.existsSync(inWorkspace)) {
+          finalPath = inWorkspace;
+        }
+      }
+    }
+
     try {
-      if (fs.existsSync(src)) {
-        doc.image(src, x, y, { width, height });
+      if (fs.existsSync(finalPath)) {
+        doc.image(finalPath, x, y, { width, height });
       }
     } catch {
       // Ignore image render error
@@ -532,6 +549,8 @@ export class XmlPdfParserService {
     for (const row of rowNodes) {
       drawRow(row, false);
     }
+
+    doc.y = currentY;
   }
 
   /**
